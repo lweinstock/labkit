@@ -15,33 +15,28 @@ void BasicComm::writeByte(const vector<uint8_t> data)
     return;
 }
 
-void BasicComm::write(const string& msg) {
-    uint8_t wbuf[DFLT_BUF_SIZE] = {0x00};
-    copy(msg.begin(), msg.end(), begin(wbuf));
+void BasicComm::write(const string& msg) 
+{
+    const uint8_t* wbuf = reinterpret_cast<const uint8_t*>(&msg[0]);
     this->writeRaw(wbuf, msg.size());
-
     DEBUG_PRINT_STRING_DATA(msg, "Sent %zu bytes: ", msg.size());
-
     return;
 }
 
 vector<uint8_t> BasicComm::readByte(size_t max_len, unsigned timeout_ms)
 {
-    uint8_t rbuf[DFLT_BUF_SIZE] = {0};
+    vector<uint8_t> rbuf(DFLT_BUF_SIZE);
     max_len = min(max_len, DFLT_BUF_SIZE);  // Limited size
-    ssize_t nbytes = this->readRaw(rbuf, max_len, timeout_ms);
-    vector<uint8_t> ret(rbuf, rbuf + nbytes);
-    return ret;
+    ssize_t nbytes = this->readRaw(&rbuf[0], max_len, timeout_ms);
+    return vector<uint8_t>(rbuf.begin(), rbuf.begin() + nbytes);
 }
 
 string BasicComm::read(unsigned timeout_ms) 
 {
-    uint8_t rbuf[DFLT_BUF_SIZE] = {0x00};
-    ssize_t nbytes = this->readRaw(rbuf, DFLT_BUF_SIZE, timeout_ms);
-    string ret((char*)rbuf, nbytes);
-
+    vector<uint8_t> rbuf(DFLT_BUF_SIZE);
+    ssize_t nbytes = this->readRaw(&rbuf[0], DFLT_BUF_SIZE, timeout_ms);
+    string ret(rbuf.begin(), rbuf.begin() + nbytes);
     DEBUG_PRINT_STRING_DATA(ret, "Read %zu bytes: ", ret.size());
-    
     return ret;
 }
 

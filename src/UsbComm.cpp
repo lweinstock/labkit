@@ -5,6 +5,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include <cstdint>
 #include <cstdio>
 
@@ -154,8 +155,10 @@ void UsbComm::open(uint16_t t_vid, uint16_t t_pid, string t_serno)
         stat = libusb_open(m_usb_dev, &m_usb_handle);
         check_and_throw(stat, "Failed to get usb handle");
     } else {
-        fprintf(stderr, "Device ID 0x%04X:0x%04X not found\n", t_vid, t_pid);
-        abort();
+        stringstream msg("");
+        msg << hex << uppercase << setw(4) << setfill('0');
+        msg << "Device 0x" << t_vid << ":0x" << t_pid << " not found";
+        throw BadConnection(msg.str());
     }
     s_dev_count++;
     DEBUG_PRINT("Opened device, new device count = %i\n", s_dev_count);
