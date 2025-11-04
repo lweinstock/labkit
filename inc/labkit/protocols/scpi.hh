@@ -21,6 +21,9 @@ public:
     /// Set communication interface
     void setComm(std::shared_ptr<BasicComm> t_comm) { m_comm = t_comm; }
 
+    /// Clear communication interface
+    void clearComm() { if (m_comm) m_comm.reset(); }
+
     /// CLear Status
     void cls() { m_comm->write("*CLS\n"); }
 

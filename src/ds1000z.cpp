@@ -40,6 +40,13 @@ void Ds1000Z::connect(unique_ptr<UsbTmcComm> t_usbtmc)
     return;
 }
 
+void Ds1000Z::disconnect()
+{
+    m_scpi.clearComm();
+    this->BasicDevice::disconnect();
+    return;
+}
+
 void Ds1000Z::enableChannel(unsigned t_channel, bool t_enable)
 {
     if ( !this->channelValid(t_channel) )
@@ -365,10 +372,6 @@ void Ds1000Z::readSampleData(unsigned t_channel, vector<double> &t_horz_data,
 
     this->getComm()->write(":WAV:SOUR CHAN" + to_string(t_channel) + "\n");
 
-    // Clear vectors
-    t_horz_data.clear();
-    t_vert_data.clear();
-
     // Get waveform preamble
     string data = this->getComm()->query(":WAV:PRE?\n");
     vector<string> preamble = split(data, ",");
@@ -405,17 +408,19 @@ void Ds1000Z::readSampleData(unsigned t_channel, vector<double> &t_horz_data,
         stop += temp.size();
         if (stop > npts) stop = npts;
         mem_data.insert(mem_data.end(), temp.begin(), temp.end());
-        usleep(100e3);  // 100ms wait to avoid accessive polling
+        usleep(10e3);  // 10ms wait to avoid accessive polling
     }
     DEBUG_PRINT("Total points read from memory: %lu\n", mem_data.size());
 
     // Convert byte data using preamble
+    t_horz_data.resize(npts);
+    t_vert_data.resize(npts);
     double xval, yval;
-    for (size_t i = 0; i < mem_data.size(); i++) {
+    for (size_t i = 0; i < npts; i++) {
         xval = i*xincr + xorg; 
         yval = (mem_data.at(i) - yref - yorg) *  yinc;
-        t_vert_data.push_back(xval);
-        t_horz_data.push_back(yval);
+        t_vert_data[i] = xval;
+        t_horz_data[i] = yval;
     }
     return;
 }
@@ -458,9 +463,9 @@ vector<uint8_t> Ds1000Z::readMemoryData()
     while (data.size() < len)
         data.append( this->getComm()->read() );
 
-    vector<uint8_t> ret;
+    vector<uint8_t> ret(len);
     for (size_t i = 0; i < len; i++)
-        ret.push_back( (uint8_t)data.at(i + header.size()) );
+        ret[i] = (uint8_t)data.at(i + header.size());
 
     return ret;   
 }
