@@ -25,9 +25,9 @@ public:
     /* Rigol DS1000Z specific definitions */
 
     /// Rigol DS1104 Vendor ID
-    static constexpr uint16_t DS1000Z_VID = 0x1AB1;
+    static constexpr uint16_t VID = 0x1AB1;
     /// Rigol DS1104 Product ID
-    static constexpr uint16_t DS1000Z_PID = 0x04CE;
+    static constexpr uint16_t PID = 0x04CE;
     /// Default port of Rigol DS1000Z
     static constexpr unsigned PORT = 5555;
 
