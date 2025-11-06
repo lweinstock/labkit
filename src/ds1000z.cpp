@@ -432,6 +432,8 @@ void Ds1000Z::readSampleData(unsigned t_channel, vector<double> &t_horz_data,
 void Ds1000Z::init()
 {
     m_scpi.setComm(this->getComm());
+    m_scpi.cls();
+    usleep(100e3);
     // Get identifier and remove all control chars (i.e. /n, /0, etc.)
     m_name = removeCtrlChars(m_scpi.getIdn());
 

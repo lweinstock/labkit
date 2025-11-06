@@ -32,7 +32,7 @@ void debugPrintStringData(FILE* t_stream, std::string t_data)
     bool ellipses_printed {false};
     for (size_t i = 0; i < t_data.size(); i++) {
         // Skip middle section if data is too long
-        if ( (i > 50) && (i < t_data.size()-50) ) {
+        if ( (i > 40) && (i < t_data.size()-40) ) {
             if (!ellipses_printed) {
                 out.append("[...]");
                 ellipses_printed = true;
@@ -60,7 +60,7 @@ void debugPrintByteData(FILE* t_stream, const uint8_t* t_data, size_t t_len)
     bool ellipses_printed {false};
     for (size_t i = 0; i < t_len; i++) {
         // Skip middle section if data is too long
-        if ( (i > 10) && (i < t_len-10) ) {
+        if ( (i > 8) && (i < t_len-8) ) {
             if (!ellipses_printed) {
                 fprintf(t_stream, "[...] ");
                 ellipses_printed = true;
