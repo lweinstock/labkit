@@ -219,7 +219,7 @@ void Sdg1000X::setRisingEdge(unsigned t_channel, double t_rise_s)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
  
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV OFST,";
+    msg << "C" << t_channel << ":BSWV RISE,";
     msg << setprecision(3) << fixed << scientific << t_rise_s << "\n";
     this->getComm()->write(msg.str());
     return;
@@ -230,8 +230,10 @@ double Sdg1000X::getRisingEdge(unsigned t_channel)
     if ( !this->channelValid(t_channel) )
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
-    /* TODO */
-    return 0.;
+    stringstream msg("");
+    msg << "C" << t_channel << ":BSWV?\n";
+    string resp = this->getComm()->query(msg.str());
+    return convertTo<double>(this->getBswvVal(resp, "RISE"));
 }
 
 void Sdg1000X::setFallingEdge(unsigned t_channel, double t_fall_s)
@@ -239,7 +241,10 @@ void Sdg1000X::setFallingEdge(unsigned t_channel, double t_fall_s)
     if ( !this->channelValid(t_channel) )
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
-    /* TODO */
+    stringstream msg("");
+    msg << "C" << t_channel << ":BSWV FALL,";
+    msg << setprecision(3) << fixed << scientific << t_fall_s << "\n";
+    this->getComm()->write(msg.str());
     return;
 }
 
@@ -248,8 +253,10 @@ double Sdg1000X::getFallingEdge(unsigned t_channel)
     if ( !this->channelValid(t_channel) )
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
-    /* TODO */
-    return 0.;
+    stringstream msg("");
+    msg << "C" << t_channel << ":BSWV?\n";
+    string resp = this->getComm()->query(msg.str());
+    return convertTo<double>(this->getBswvVal(resp, "FALL"));
 }
 
 void Sdg1000X::setPulseWidth(unsigned t_channel, double t_width_s)
@@ -257,7 +264,10 @@ void Sdg1000X::setPulseWidth(unsigned t_channel, double t_width_s)
     if ( !this->channelValid(t_channel) )
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
-    /* TODO */
+    stringstream msg("");
+    msg << "C" << t_channel << ":BSWV WIDTH,";
+    msg << setprecision(3) << fixed << scientific << t_width_s << "\n";
+    this->getComm()->write(msg.str());
     return;
 }
 
@@ -266,8 +276,10 @@ double Sdg1000X::getPulseWidth(unsigned t_channel)
     if ( !this->channelValid(t_channel) )
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
-    /* TODO */
-    return 0.;
+    stringstream msg("");
+    msg << "C" << t_channel << ":BSWV?\n";
+    string resp = this->getComm()->query(msg.str());
+    return convertTo<double>(this->getBswvVal(resp, "WIDTH"));
 }
 
 /*
@@ -290,10 +302,10 @@ std::string Sdg1000X::wvfmToString(Waveform t_wfvm)
     switch (t_wfvm)
     {
         case SINE:      return "SINE";
-        case SQUARE:    return "SQU";
+        case SQUARE:    return "SQUARE";
         case RAMP:      return "RAMP";
-        case PULSE:     return "PULS";
-        case NOISE:     return "NOIS";
+        case PULSE:     return "PULSE";
+        case NOISE:     return "NOISE";
         case DC:        return "DC";
     }
     return "NONE";  // Never reached
