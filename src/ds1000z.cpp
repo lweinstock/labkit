@@ -25,7 +25,7 @@ Ds1000Z::Ds1000Z(unique_ptr<UsbTmcComm> t_usbtmc) : Ds1000Z()
 
 void Ds1000Z::connect(unique_ptr<TcpipComm> t_tcpip)
 {
-    this->BasicDevice::connect(std::move(t_tcpip));
+    this->setComm(std::move(t_tcpip));
     this->init();
     return;
 }
@@ -35,7 +35,7 @@ void Ds1000Z::connect(unique_ptr<UsbTmcComm> t_usbtmc)
     t_usbtmc->configInterface(0);
     t_usbtmc->configEndpointIn(0x82);
     t_usbtmc->configEndpointOut(0x03);
-    this->BasicDevice::connect(std::move(t_usbtmc));
+    this->setComm(std::move(t_usbtmc));
     this->init();
     return;
 }

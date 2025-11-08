@@ -14,7 +14,7 @@ BasicDevice::~BasicDevice()
     return;
 }
 
-void BasicDevice::connect(std::unique_ptr<BasicComm> t_comm)
+void BasicDevice::setComm(std::unique_ptr<BasicComm> t_comm)
 {
     if ( this->connected() )
         throw DeviceError(m_name + " is already connected");

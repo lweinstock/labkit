@@ -29,7 +29,7 @@ Sdg1000X::Sdg1000X(std::unique_ptr<UsbTmcComm> t_usbtmc) : Sdg1000X()
 
 void Sdg1000X::connect(std::unique_ptr<TcpipComm> t_tcpip)
 {
-    this->BasicDevice::connect(std::move(t_tcpip));
+    this->setComm(std::move(t_tcpip));
     this->init();
     return;
 }
@@ -39,7 +39,7 @@ void Sdg1000X::connect(std::unique_ptr<UsbTmcComm> t_usbtmc)
     t_usbtmc->configInterface(0);
     t_usbtmc->configEndpointIn(0x81);
     t_usbtmc->configEndpointOut(0x01);
-    this->BasicDevice::connect(std::move(t_usbtmc));
+    this->setComm(std::move(t_usbtmc));
     this->init();
     return;
 }

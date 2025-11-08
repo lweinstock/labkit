@@ -25,7 +25,7 @@ Dg4000::Dg4000(std::unique_ptr<UsbTmcComm> t_usbtmc) : Dg4000()
 
 void Dg4000::connect(std::unique_ptr<TcpipComm> t_tcpip)
 {
-    this->BasicDevice::connect(std::move(t_tcpip));
+    this->setComm(std::move(t_tcpip));
     this->init();
     return;
 }
@@ -35,7 +35,7 @@ void Dg4000::connect(std::unique_ptr<UsbTmcComm> t_usbtmc)
     t_usbtmc->configInterface(0);
     t_usbtmc->configEndpointIn(0x86);
     t_usbtmc->configEndpointOut(0x02);
-    this->BasicDevice::connect(std::move(t_usbtmc));
+    this->setComm(std::move(t_usbtmc));
     this->init();
     return;
 }

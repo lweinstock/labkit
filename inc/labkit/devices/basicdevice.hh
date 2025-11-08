@@ -34,7 +34,7 @@ protected:
     BasicDevice(std::string t_name) : m_name(t_name) {};
 
     /// Establish connection using provided unique pointer and take ownership
-    void connect(std::unique_ptr<BasicComm> t_comm);
+    void setComm(std::unique_ptr<BasicComm> t_comm);
 
     /// Returns a pointer to the current communication interface
     std::shared_ptr<BasicComm> getComm() const;

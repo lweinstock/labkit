@@ -15,7 +15,7 @@ void LabJackU3::connect(std::unique_ptr<UsbComm> t_usb)
     t_usb->configEndpointOut(0x82);
     t_usb->configEndpointIn(0x01);
 
-    this->BasicDevice::connect(std::move(t_usb));
+    this->setComm(std::move(t_usb));
     return;
 }
 
