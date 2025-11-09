@@ -20,7 +20,7 @@ public:
     Ds1000Z() : Oscilloscope(4, "Rigol,DS1000Z") {};
     Ds1000Z(std::unique_ptr<TcpipComm> t_tcpip); 
     Ds1000Z(std::unique_ptr<UsbTmcComm> t_usbtmc); 
-    ~Ds1000Z() { m_scpi.clearComm(); };
+    ~Ds1000Z() {};
 
     /* Rigol DS1000Z specific definitions */
 
@@ -36,8 +36,6 @@ public:
 
     /// Connect to Rigol DS1000Z via USBTMC
     void connect(std::unique_ptr<UsbTmcComm> t_usbtmc);
-
-    virtual void disconnect() override;
 
     /* Generic oscilloscope definitions */
 

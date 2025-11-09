@@ -9,23 +9,22 @@ namespace labkit
 
 /** \brief Implementation of Standard Commands for Programmable Instruments (SCPI)
  *
- *  Supports common commands defined in IEEE 488.2
+ *  Supports common commands defined in IEEE 488.2.
+ *
+ *  HINT: Protocols don't take ownerships of communication interfaces!
  */
 class Scpi
 {
 public:
     Scpi() {};
-    Scpi(std::shared_ptr<BasicComm> t_comm) : m_comm(t_comm) {};
+    Scpi(std::weak_ptr<BasicComm> t_comm) : m_comm(t_comm) {};
     ~Scpi() {};
 
     /// Set communication interface
-    void setComm(std::shared_ptr<BasicComm> t_comm) { m_comm = t_comm; }
-
-    /// Clear communication interface
-    void clearComm() { if (m_comm) m_comm.reset(); }
+    void setComm(std::weak_ptr<BasicComm> t_comm) { m_comm = t_comm; }
 
     /// CLear Status
-    void cls() { m_comm->write("*CLS\n"); }
+    void cls() { this->getComm()->write("*CLS\n"); }
 
     /// Event Status Enable command
     void setEse(uint8_t t_event_status);
@@ -49,10 +48,10 @@ public:
     };
 
     /// IDeNtification query
-    std::string getIdn() { return m_comm->query("*IDN?\n"); }
+    std::string getIdn() { return this->getComm()->query("*IDN?\n"); }
 
     /// OPeration Complete command
-    void setOpc() { m_comm->write("*OPC\n"); }
+    void setOpc() { this->getComm()->write("*OPC\n"); }
 
     /// OPeration Complete query
     bool getOpc();
@@ -61,7 +60,7 @@ public:
     void waitForOpc(unsigned t_interval_ms = 100);
 
     /// ReSeT
-    void rst() { m_comm->write("*RST\n"); }
+    void rst() { this->getComm()->write("*RST\n"); }
 
     /// Service Request Enable command
     void setSre(uint8_t t_service_request);
@@ -76,10 +75,12 @@ public:
     bool tst();
 
     /// WAIt to continue
-    void wai() { m_comm->write("*WAI\n"); }
+    void wai() { this->getComm()->write("*WAI\n"); }
 
 private:
-    std::shared_ptr<BasicComm> m_comm {nullptr};
+    std::weak_ptr<BasicComm> m_comm;
+
+    std::shared_ptr<BasicComm> getComm();
 };
 
 }

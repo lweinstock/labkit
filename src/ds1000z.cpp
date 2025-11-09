@@ -40,13 +40,6 @@ void Ds1000Z::connect(unique_ptr<UsbTmcComm> t_usbtmc)
     return;
 }
 
-void Ds1000Z::disconnect()
-{
-    m_scpi.clearComm();
-    this->BasicDevice::disconnect();
-    return;
-}
-
 void Ds1000Z::enableChannel(unsigned t_channel, bool t_enable)
 {
     if ( !this->channelValid(t_channel) )
