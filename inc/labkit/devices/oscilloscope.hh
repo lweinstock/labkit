@@ -20,9 +20,6 @@ class Oscilloscope : public BasicDevice
 public:
     virtual ~Oscilloscope() {};
 
-    /// Returns maximum number of channels
-    const unsigned getNChannels() const { return m_channels; }
-
     /// Turn channel on/off
     virtual void enableChannel(unsigned t_channel, bool t_enable = true) = 0;
     /// Turn channel off
@@ -114,17 +111,12 @@ public:
 
 protected:
     Oscilloscope() : BasicDevice("Unknown oscilloscope") {};
-    Oscilloscope(unsigned n_ch) : BasicDevice("Unknown oscilloscope"), 
-        m_channels(n_ch) {};
-    Oscilloscope(unsigned t_ch, std::string t_name) : BasicDevice(t_name), 
-        m_channels(t_ch) {};
 
-    /// Returns true if channel is valid (not 0 and less than or equal to m_channels)
-    bool channelValid(unsigned t_channel) 
-        { return t_channel && (t_channel <= m_channels); }
-private:
-    /// Number of channels
-    const unsigned m_channels{0};
+    Oscilloscope(unsigned t_channels) 
+      : BasicDevice("Unknown oscilloscope", t_channels) {};
+
+    Oscilloscope(std::string t_name, unsigned t_channels) 
+      : BasicDevice(t_name, t_channels) {};
 };
 
 }

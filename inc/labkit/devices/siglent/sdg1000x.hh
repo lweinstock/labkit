@@ -17,7 +17,7 @@ class Sdg1000X : public FunctionGenerator
  * 
  */
 public:
-    Sdg1000X() : FunctionGenerator(2, "Siglent,SDG1000X") {};
+    Sdg1000X() : FunctionGenerator("Siglent,SDG1000X", 2) {};
     Sdg1000X(std::unique_ptr<TcpipComm> t_tcpip);
     Sdg1000X(std::unique_ptr<UsbTmcComm> t_usbtmc);
     ~Sdg1000X() {};

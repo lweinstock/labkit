@@ -26,12 +26,21 @@ public:
     /// Returns true, if the device is connected and ready for communication
     bool connected() const { return (m_comm ? m_comm->good() : false); }
 
+    /// Returns number of channels of the device
+    unsigned getNChannels() const { return m_channels; }
+
+    /// Returns a human-readable string containting device name and connection
     const std::string getInfo() const;
 
 protected:
     /// Default ctor only for derived classes
     BasicDevice() {};
-    BasicDevice(std::string t_name) : m_name(t_name) {};
+    BasicDevice(std::string t_name, unsigned t_channels = 1) 
+      : m_name(t_name), m_channels(t_channels) {};
+
+    /// Returns true if channel is valid (NOTE: 1-indexed!)
+    virtual bool channelValid(unsigned t_channel) 
+        { return t_channel && (t_channel <= m_channels); }
 
     /// Establish connection using provided unique pointer and take ownership
     void setComm(std::unique_ptr<BasicComm> t_comm);
@@ -44,6 +53,7 @@ protected:
 
 private:
     std::shared_ptr<BasicComm> m_comm {nullptr};
+    unsigned m_channels{1};
 };
 
 }

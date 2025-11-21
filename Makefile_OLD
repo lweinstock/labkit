@@ -21,18 +21,18 @@ CFLAGS+=$(shell pkg-config libusb-1.0 --cflags)
 LDFLAGS+=$(shell pkg-config libusb-1.0 --libs)
 
 # Debugging
-OBJ+=$(SRC)/Debug.o
+OBJ+=$(SRC)/debug.o
 
 # Interfaces
-OBJ+=$(SRC)/BasicComm.o
-OBJ+=$(SRC)/SerialComm.o
-OBJ+=$(SRC)/TcpipComm.o
-OBJ+=$(SRC)/TcpipSerialComm.o
-OBJ+=$(SRC)/UsbComm.o
-OBJ+=$(SRC)/UsbTmcComm.o
-OBJ+=$(SRC)/Modbus.o
-OBJ+=$(SRC)/ModbusRtu.o
-OBJ+=$(SRC)/ModbusTcp.o
+OBJ+=$(SRC)/basiccomm.o
+OBJ+=$(SRC)/serialcomm.o
+OBJ+=$(SRC)/tcpipcomm.o
+OBJ+=$(SRC)/tcpipserialcomm.o
+OBJ+=$(SRC)/usbcomm.o
+OBJ+=$(SRC)/usbtmccomm.o
+OBJ+=$(SRC)/modbus.o
+OBJ+=$(SRC)/modbusrtu.o
+OBJ+=$(SRC)/modbustcp.o
 
 ###   INSTALL SETUP   ###
 

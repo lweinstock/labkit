@@ -17,7 +17,7 @@ class Dg4000 : public FunctionGenerator
  * 
  */
 public:
-    Dg4000() : FunctionGenerator(2, "Rigol,DG4000") {};
+    Dg4000() : FunctionGenerator("Rigol,DG4000", 2) {};
     Dg4000(std::unique_ptr<TcpipComm> t_tcpip);
     Dg4000(std::unique_ptr<UsbTmcComm> t_usbtmc);
     ~Dg4000() {};

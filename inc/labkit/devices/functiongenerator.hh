@@ -20,9 +20,6 @@ class FunctionGenerator : public BasicDevice
 public:
     virtual ~FunctionGenerator() {};
 
-    /// Returns number of channels of device
-    const unsigned getNChannels() const { return m_channels; }
-
     /// Turn channel on/off
     virtual void enableChannel(unsigned t_channel, bool t_enable = true) = 0;
     /// Turn channel off
@@ -76,18 +73,12 @@ public:
 
 protected:
     FunctionGenerator() : BasicDevice("Unknown function generator") {};
-    FunctionGenerator(unsigned n_ch) : BasicDevice("Unknown function generator"),
-        m_channels(n_ch) {};
-    FunctionGenerator(unsigned t_ch, std::string t_name) : BasicDevice(t_name), 
-        m_channels(t_ch) {};
-    
-    /// Returns true if channel is valid (not 0 and less than or equal to m_channels)
-    bool channelValid(unsigned t_channel) 
-        { return t_channel && (t_channel <= m_channels); }
 
-private:
-    /// Number of channels
-    const unsigned m_channels{0};
+    FunctionGenerator(unsigned t_channels) 
+      : BasicDevice("Unknown function generator", t_channels) {};
+
+    FunctionGenerator(std::string t_name, unsigned t_channels) 
+      : BasicDevice(t_name, t_channels) {};
 };
 
 }

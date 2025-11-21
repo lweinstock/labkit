@@ -17,7 +17,7 @@ namespace labkit
 class Ds1000Z : public Oscilloscope
 {
 public:
-    Ds1000Z() : Oscilloscope(4, "Rigol,DS1000Z") {};
+    Ds1000Z() : Oscilloscope("Rigol,DS1000Z", 4) {};
     Ds1000Z(std::unique_ptr<TcpipComm> t_tcpip); 
     Ds1000Z(std::unique_ptr<UsbTmcComm> t_usbtmc); 
     ~Ds1000Z() {};
