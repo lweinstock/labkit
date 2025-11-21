@@ -10,6 +10,10 @@
 namespace labkit 
 {
 
+/**
+ * @brief Class for the Rohde & Schwarz HMP4000-series lab power supplies
+ * 
+ */
 class Hmp4000 : public PowerSupply
 {
 public:
