@@ -86,6 +86,9 @@ public:
     std::vector<uint8_t> queryOneWire(uint64_t t_rom, uint8_t t_rom_function,
         const std::vector<uint8_t> &t_data, size_t t_rbytes = 0);
 
+    /// Sends a global query (0x33) to all 1-wire devices, returns ROM address
+    uint64_t getRomOneWire();
+
     std::vector<uint8_t> queryI2C(uint8_t t_addr,
         const std::vector<uint8_t> &t_data, size_t t_rbytes = 0);
 

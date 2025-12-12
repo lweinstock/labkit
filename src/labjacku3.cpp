@@ -1,5 +1,7 @@
+#include <cstdint>
 #include <labkit/devices/labjack/labjacku3.hh>
 #include <labkit/exceptions.hh>
+#include <labkit/debug.hh>
 
 #include <sstream>
 #include <iomanip>
@@ -188,8 +190,29 @@ vector<uint8_t> LabJackU3::queryOneWire(uint64_t t_rom, uint8_t t_rom_function,
     auto resp = this->queryExtendedCommand(ONE_WIRE, msg, 64);
 
     // Remove one wire header (16 bytes)
-    return vector<uint8_t>(resp.begin() + 16, resp.begin() + 16 + t_rbytes);
+    vector<uint8_t> ret(resp.begin() + 16, resp.begin() + 16 + t_rbytes);
+    DEBUG_PRINT_BYTE_DATA(ret.data(), ret.size(), "Received %i bytes: ", ret.size());
+    return ret;
 }
+
+uint64_t LabJackU3::getRomOneWire()
+{
+    // Expect 8 bytes (ROM = 64 bits)
+    auto resp = this->queryOneWire(0, 0x33, {}, 8);
+    if (resp.size() != 8)
+        throw BadProtocol("Received wrong size ROM");
+    uint64_t rom = (static_cast<uint64_t>(resp.at(7)) << 56) 
+                 | (static_cast<uint64_t>(resp.at(6)) << 48) 
+                 | (static_cast<uint64_t>(resp.at(5)) << 40) 
+                 | (static_cast<uint64_t>(resp.at(4)) << 32)
+                 | (static_cast<uint64_t>(resp.at(3)) << 24) 
+                 | (static_cast<uint64_t>(resp.at(2)) << 16)
+                 | (static_cast<uint64_t>(resp.at(1)) <<  8) 
+                 | (static_cast<uint64_t>(resp.at(0)) <<  0); 
+    DEBUG_PRINT("Received ROM 0x%016LX\n", rom);
+    return rom;
+}
+
 
 vector<uint8_t> LabJackU3::queryI2C(uint8_t t_addr, 
     const std::vector<uint8_t> &t_data, size_t t_rbytes)
@@ -321,6 +344,7 @@ vector<uint8_t> LabJackU3::queryExtendedCommand(ExtendedCommand t_ecmd,
     if (msg.size() > EXT_CMD_MAX_LEN)
         throw labkit::BadProtocol("Message exceeds extended command length");
 
+    DEBUG_PRINT("Extended command query 0x%02X\n", t_ecmd);
     this->getComm()->writeByte(msg);
     auto resp = this->getComm()->readByte(t_max_len);
 
