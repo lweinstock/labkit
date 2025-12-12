@@ -13,8 +13,8 @@ namespace labkit
 void LabJackU3::connect(std::unique_ptr<UsbComm> t_usb)
 {
     t_usb->configInterface(0);
-    t_usb->configEndpointOut(0x82);
-    t_usb->configEndpointIn(0x01);
+    t_usb->configEndpointOut(0x01);
+    t_usb->configEndpointIn(0x82);
 
     this->setComm(std::move(t_usb));
     return;
@@ -321,7 +321,8 @@ vector<uint8_t> LabJackU3::queryExtendedCommand(ExtendedCommand t_ecmd,
     if (msg.size() > EXT_CMD_MAX_LEN)
         throw labkit::BadProtocol("Message exceeds extended command length");
 
-    auto resp = this->getComm()->queryByte(msg);
+    this->getComm()->writeByte(msg);
+    auto resp = this->getComm()->readByte(t_max_len);
 
     // Parse response
     if (resp.size() == 2)
