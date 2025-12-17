@@ -31,7 +31,8 @@ public:
 
     /* LabJack U3 commands */
 
-    /// Analog input pin definitions
+    /// Analog input pin definitions 
+    // TODO: Conversion from DigitalIo::FIO0 to AnalogInput::AIN0 etc. !!!
     enum AnalogInput : unsigned { AIN0 = 0, AIN1, AIN2, AIN3, AIN4, AIN5, AIN6, 
         AIN7, AIN8, AIN9, AIN10, AIN11, AIN12, AIN13, AIN14, AIN15, TEMP = 30, 
         VREG, VREF = 30, GND,

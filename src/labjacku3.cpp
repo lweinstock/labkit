@@ -138,7 +138,9 @@ uint16_t LabJackU3::readAnalogRaw(AnalogInput t_pos_in, AnalogInput t_neg_in,
     auto resp = this->queryExtendedCommand(FEEDBACK, msg);
 
     // TODO: write separate method for feedback functions
-    return ((resp[10] << 8) | resp[9]);
+    uint16_t ret = (resp[10] << 8) | resp[9];
+    ret = ret >> 4; // ADC values are multiplied by 16 to 'mimic' 16-bit
+    return ret;
 }
 
 void LabJackU3::setupOneWire(DigitalIo t_dq, DigitalIo t_dpu, 
