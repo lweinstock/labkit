@@ -12,19 +12,19 @@ using namespace std;
 namespace labkit
 {
 
-Hmp4000::Hmp4000(unique_ptr<TcpipComm> t_tcpip)
+Hmp4000::Hmp4000(unique_ptr<TcpipComm> t_tcpip) : Hmp4000()
 {
     this->connect(std::move(t_tcpip));
     return;
 }
 
-Hmp4000::Hmp4000(unique_ptr<SerialComm> t_serial)
+Hmp4000::Hmp4000(unique_ptr<SerialComm> t_serial) : Hmp4000()
 {
     this->connect(std::move(t_serial));
     return;
 }
 
-Hmp4000::Hmp4000(unique_ptr<UsbTmcComm> t_usbtmc)
+Hmp4000::Hmp4000(unique_ptr<UsbTmcComm> t_usbtmc) : Hmp4000()
 {
     this->connect(std::move(t_usbtmc));
     return;
