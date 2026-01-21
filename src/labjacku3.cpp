@@ -75,8 +75,8 @@ void LabJackU3::setPinMode(DigitalIo t_pin, PinMode t_mode)
             fio &= ~(1 << t_pin);   // Clear bit
     }
 
-    //printf("Setting pin %u to %i (EIO 0x%02X,  FIO 0x%02X)\n", (unsigned)t_pin, 
-    //    t_mode, eio, fio);
+    DEBUG_PRINT("Setting IO%u to %s mode (FIO = 0x%02X, EIO = 0x%02X)\n", 
+        static_cast<unsigned>(t_pin), t_mode ? "ANALOG" : "DIGITAL", fio, eio);
 
     this->setAnalogInMask(eio, fio);
     return;
@@ -90,6 +90,10 @@ void LabJackU3::setPinDirection(DigitalIo t_pin, PinDirection t_dir)
     msg.push_back(0x00);    // echo
     msg.push_back(IoType::BIT_DIR_WRITE);
     msg.push_back(bits);
+
+    DEBUG_PRINT("Setting IO%u to %s direction\n", static_cast<unsigned>(t_pin), 
+        t_dir ? "OUTPUT" : "INPUT");
+
     auto resp = this->queryExtendedCommand(FEEDBACK, msg);
     return;
 }
@@ -101,10 +105,12 @@ LabJackU3::PinState LabJackU3::getPinState(DigitalIo t_pin)
     msg.push_back(IoType::BIT_STATE_READ);
     msg.push_back(static_cast<uint8_t>(t_pin));
     auto resp = this->queryExtendedCommand(FEEDBACK, msg);
+    PinState state = (resp.at(9) == 0x00) ? LOW : HIGH;
 
-    if (resp.at(9) == 0x00)
-        return LOW;
-    return HIGH;
+    DEBUG_PRINT("Pin IO%u is %s\n", static_cast<unsigned>(t_pin), 
+        state ? "HIGH" : "LOW");
+
+    return state;
 }
 
 void LabJackU3::setPinState(DigitalIo t_pin, PinState t_state)
@@ -115,6 +121,10 @@ void LabJackU3::setPinState(DigitalIo t_pin, PinState t_state)
     msg.push_back(0x00);    // echo
     msg.push_back(IoType::BIT_STATE_WRITE);
     msg.push_back(bits);
+
+    DEBUG_PRINT("Setting IO%u to %s\n", static_cast<unsigned>(t_pin), 
+        t_state ? "HIGH" : "LOW");
+
     auto resp = this->queryExtendedCommand(FEEDBACK, msg);
     return;
 }
@@ -140,6 +150,10 @@ uint16_t LabJackU3::readAnalogRaw(AnalogInput t_pos_in, AnalogInput t_neg_in,
     // TODO: write separate method for feedback functions
     uint16_t ret = (resp[10] << 8) | resp[9];
     ret = ret >> 4; // ADC values are multiplied by 16 to 'mimic' 16-bit
+
+    DEBUG_PRINT("Analog value of AIN(%u, %u) is 0x%04X\n", 
+        static_cast<unsigned>(t_pos_in), static_cast<unsigned>(t_neg_in), ret);
+
     return ret;
 }
 
@@ -162,8 +176,8 @@ void LabJackU3::setupI2C(DigitalIo t_sda, DigitalIo t_scl, uint8_t t_speed,
     return;
 }
 
-vector<uint8_t> LabJackU3::queryOneWire(uint64_t t_rom, uint8_t t_rom_function,
-    const vector<uint8_t> &t_data, size_t t_rbytes)
+vector<uint8_t> LabJackU3::queryOneWire(uint64_t t_rom, 
+    OneWireRomCommand t_rom_cmd, const vector<uint8_t> &t_data, size_t t_rbytes)
 {
     vector<uint8_t> msg;
     // Body of the message
@@ -172,7 +186,7 @@ vector<uint8_t> LabJackU3::queryOneWire(uint64_t t_rom, uint8_t t_rom_function,
     msg.push_back(m_dq);    // Digital IO pin (0-15)
     msg.push_back(m_dpu);   // DPU pin
     msg.push_back(0x00);    // Reserved
-    msg.push_back(t_rom_function);
+    msg.push_back(t_rom_cmd);
     msg.push_back(static_cast<uint8_t>(0xFF & (t_rom >>  0))); // ROM0 (LSB)
     msg.push_back(static_cast<uint8_t>(0xFF & (t_rom >>  8))); // ROM1
     msg.push_back(static_cast<uint8_t>(0xFF & (t_rom >> 16))); // ROM2
@@ -188,19 +202,29 @@ vector<uint8_t> LabJackU3::queryOneWire(uint64_t t_rom, uint8_t t_rom_function,
     msg.insert(msg.end(), t_data.begin(), t_data.end());
     msg.resize(58, 0x00);   // Message has to be 64 bytes long (zero padded)
 
+    DEBUG_PRINT("Sending %lu byte(s) with ROM command 0x%02X to ROM 0x%016lX:\n",
+        t_data.size(), t_rom_cmd, t_rom);  
+    DEBUG_PRINT_BYTE_DATA(t_data.data(), t_data.size(), "%s", ""); 
+
     // LabJack one wire firmware expects exactly 64 to be read! 
     auto resp = this->queryExtendedCommand(ONE_WIRE, msg, 64);
 
+    // Extract data from header (for now only for debugging)
+    uint8_t error = resp.at(6);
+    uint8_t warning = resp.at(9);
+
+    DEBUG_PRINT("Read %lu byte(s) (ERROR = 0x%02X, WARNING = 0x%02X)\n", 
+        t_rbytes, error, warning);
+
     // Remove one wire header (16 bytes)
     vector<uint8_t> ret(resp.begin() + 16, resp.begin() + 16 + t_rbytes);
-    DEBUG_PRINT_BYTE_DATA(ret.data(), ret.size(), "Received %i bytes: ", ret.size());
     return ret;
 }
 
 uint64_t LabJackU3::getRomOneWire()
 {
     // Expect 8 bytes (ROM = 64 bits)
-    auto resp = this->queryOneWire(0, 0x33, {}, 8);
+    auto resp = this->queryOneWire(0, SEARCH_ROM, {}, 8);
     if (resp.size() != 8)
         throw BadProtocol("Received wrong size ROM");
     uint64_t rom = (static_cast<uint64_t>(resp.at(7)) << 56) 
@@ -314,7 +338,7 @@ string LabJackU3::errorToString(uint8_t t_error_code)
         case 0x81: return "DSP_SIGNAL_OUT_OF_RANGE";
         case 0x90: return "MODBUS_RSP_OVERFLOW";
         case 0x91: return "MODBUS_CMD_OVERFLOW";
-        default: return "Uknown error";
+        default: return "Unknown error";
     }
     return "";
 }
@@ -366,7 +390,7 @@ vector<uint8_t> LabJackU3::queryExtendedCommand(ExtendedCommand t_ecmd,
     {
         stringstream err("");
         err << "Received error '" << errorToString(error_code) << "'";
-        err << " (0x)" << hex << setw(2) << setfill('0') << error_code << ")";
+        err << " (0x" << hex << setw(2) << setfill('0') << error_code << ")";
         throw labkit::BadProtocol(err.str());
     }
 

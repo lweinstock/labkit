@@ -58,6 +58,10 @@ public:
     enum OneWireOptions : uint8_t { DPU_DISABLE = 0x00, DPU_ENABLE = 0x01, 
         DPU_POLARITY_HI = 0x02, DPU_IDLE_HI = 0x04 };
 
+    /// One wire ROM function commands
+    enum OneWireRomCommand : uint8_t { SEARCH_ROM = 0xF0, READ_ROM = 0x33,
+        MATCH_ROM = 0x55, SKIP_ROM = 0xCC, ALARM_SEARCH = 0xEC, TEST = 0xAB };
+
     /// I2C options
     enum I2COptions : uint8_t { NONE = 0x00, RESET_AT_START = 0x02, 
         NO_STOP_AT_RESTART = 0x04, ENABLE_CLOCK_STRETCH = 0x08 };
@@ -84,7 +88,7 @@ public:
     void setupI2C(DigitalIo t_sda, DigitalIo t_scl, uint8_t t_speed = 0x00, 
         I2COptions t_opt = NONE);
 
-    std::vector<uint8_t> queryOneWire(uint64_t t_rom, uint8_t t_rom_function,
+    std::vector<uint8_t> queryOneWire(uint64_t t_rom, OneWireRomCommand t_rom_cmd,
         const std::vector<uint8_t> &t_data, size_t t_rbytes = 0);
 
     /// Sends a global query (0x33) to all 1-wire devices, returns ROM address
