@@ -212,12 +212,12 @@ vector<uint8_t> LabJackU3::queryOneWire(uint64_t t_rom,
     // Extract data from header (for now only for debugging)
     uint8_t error = resp.at(6);
     uint8_t warning = resp.at(9);
-
-    DEBUG_PRINT("Read %lu byte(s) (ERROR = 0x%02X, WARNING = 0x%02X)\n", 
-        t_rbytes, error, warning);
-
     // Remove one wire header (16 bytes)
     vector<uint8_t> ret(resp.begin() + 16, resp.begin() + 16 + t_rbytes);
+
+    DEBUG_PRINT("Read %lu byte(s) (ERROR = 0x%02X, WARNING = 0x%02X):\n", 
+        t_rbytes, error, warning);
+    DEBUG_PRINT_BYTE_DATA(ret.data(), ret.size(), "%s", ""); 
     return ret;
 }
 
