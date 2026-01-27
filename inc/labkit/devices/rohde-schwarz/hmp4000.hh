@@ -76,7 +76,6 @@ private:
     void selectChannel(unsigned t_channel);
 
     Scpi m_scpi{};
-    unsigned m_cur_channel{0};
 };
 
 }

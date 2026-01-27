@@ -144,14 +144,10 @@ void Hmp4000::selectChannel(unsigned t_channel)
     if ( !this->channelValid(t_channel) )
             throw DeviceError("Invalid channel number " + to_string(t_channel));
 
-    if (t_channel == m_cur_channel) // Nothing to do!
-        return;
-
     stringstream msg("");
     msg << "INST OUTP" << (t_channel + 1) << "\n";
     DEBUG_PRINT("Switching to channel %u\n", t_channel);
     this->getComm()->write(msg.str());
-    m_cur_channel = t_channel;
     return;
 }
 
