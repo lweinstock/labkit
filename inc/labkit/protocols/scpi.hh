@@ -48,7 +48,7 @@ public:
     };
 
     /// IDeNtification query
-    std::string getIdn() { return this->getComm()->query("*IDN?\n"); }
+    std::string getIdn() { return this->getComm()->queryUntil("*IDN?\n", "\n"); }
 
     /// OPeration Complete command
     void setOpc() { this->getComm()->write("*OPC\n"); }

@@ -71,12 +71,22 @@ string BasicComm::readUntil(const string& delim,
 
 string BasicComm::query(const string& msg, unsigned timeout_ms) {
     this->write(msg);
+    //usleep(10000);
     return this->read(timeout_ms);
+}
+
+string BasicComm::queryUntil(const string& t_msg, const string& t_delim, 
+    unsigned t_timeout_ms)
+{
+    this->write(t_msg);
+    //usleep(10000);
+    return this->readUntil(t_delim, t_timeout_ms);
 }
 
 vector<uint8_t> BasicComm::queryByte(const vector<uint8_t> data, unsigned timeout_ms)
 {
     this->writeByte(data);
+    //usleep(10000);
     return this->readByte(timeout_ms);
 }
 
