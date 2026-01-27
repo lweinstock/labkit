@@ -148,7 +148,7 @@ void Hmp4000::selectChannel(unsigned t_channel)
         return;
 
     stringstream msg("");
-    msg << "INST OUTP" << t_channel << "\n";
+    msg << "INST OUTP" << (t_channel + 1) << "\n";
     DEBUG_PRINT("Switching to channel %u\n", t_channel);
     this->getComm()->write(msg.str());
     m_cur_channel = t_channel;

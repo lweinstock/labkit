@@ -50,7 +50,7 @@ void Sdg1000X::enableChannel(unsigned t_channel, bool t_enable)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << "C" << t_channel << ":OUTP " << (t_enable ? "ON" : "OFF") << "\n";
+    msg << "C" << (t_channel + 1) << ":OUTP " << (t_enable ? "ON" : "OFF") << "\n";
     this->getComm()->write(msg.str());
     return;
 }
@@ -61,7 +61,7 @@ bool Sdg1000X::channelEnabled(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << "C" << t_channel << ":OUTP?\n";
+    msg << "C" << (t_channel + 1) << ":OUTP?\n";
     string resp = this->getComm()->query(msg.str());
     if ( resp.find("ON") != string::npos )
         return true;
@@ -74,7 +74,7 @@ void Sdg1000X::setWaveform(unsigned t_channel, Waveform t_wvfm)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV WVTP," << wvfmToString(t_wvfm) << "\n";
+    msg << "C" << (t_channel + 1) << ":BSWV WVTP," << wvfmToString(t_wvfm) << "\n";
     this->getComm()->write(msg.str());
     return;
 }
@@ -98,7 +98,7 @@ void Sdg1000X::setFrequency(unsigned t_channel, double t_freq_hz)
         throw DeviceError("Invalid frequency " + to_string(t_freq_hz) + "Hz");
 
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV FRQ,";
+    msg << "C" << (t_channel + 1) << ":BSWV FRQ,";
     msg << setprecision(3) << fixed << t_freq_hz << "\n";
     this->getComm()->write(msg.str());
     return;
@@ -110,7 +110,7 @@ double Sdg1000X::getFrequency(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV?\n";
+    msg << "C" << (t_channel + 1) << ":BSWV?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(this->getBswvVal(resp, "FRQ"));
 }
@@ -124,7 +124,7 @@ void Sdg1000X::setDutyCycle(unsigned t_channel, double t_dcl)
         throw DeviceError("Invalid duty cycle " + to_string(t_dcl));
 
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV DUTY,";
+    msg << "C" << (t_channel + 1) << ":BSWV DUTY,";
     msg << setprecision(3) << fixed << 100.*t_dcl << "\n";
     this->getComm()->write(msg.str());
     return;
@@ -136,7 +136,7 @@ double Sdg1000X::getDutyCycle(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV?\n";
+    msg << "C" << (t_channel + 1) << ":BSWV?\n";
     string resp = this->getComm()->query(msg.str());
     return 0.01 * convertTo<double>(this->getBswvVal(resp, "FRQ"));
 }
@@ -150,7 +150,7 @@ void Sdg1000X::setPhase(unsigned t_channel, double t_phase_deg)
         throw DeviceError("Invalid phase angle " + to_string(t_phase_deg));
 
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV PHSE,";
+    msg << "C" << (t_channel + 1) << ":BSWV PHSE,";
     msg << setprecision(3) << fixed << t_phase_deg << "\n";
     this->getComm()->write(msg.str());
     return;
@@ -162,7 +162,7 @@ double Sdg1000X::getPhase(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV?\n";
+    msg << "C" << (t_channel + 1) << ":BSWV?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(this->getBswvVal(resp, "PHSE"));
 }
@@ -173,7 +173,7 @@ void Sdg1000X::setAmplitude(unsigned t_channel, double t_ampl_v)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV AMP,";
+    msg << "C" << (t_channel + 1) << ":BSWV AMP,";
     msg << setprecision(3) << fixed << t_ampl_v << "\n";
     this->getComm()->write(msg.str());
     return;
@@ -185,7 +185,7 @@ double Sdg1000X::getAmplitude(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
  
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV?\n";
+    msg << "C" << (t_channel + 1) << ":BSWV?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(this->getBswvVal(resp, "AMP"));
 }
@@ -196,7 +196,7 @@ void Sdg1000X::setOffset(unsigned t_channel, double t_offset_v)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
  
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV OFST,";
+    msg << "C" << (t_channel + 1) << ":BSWV OFST,";
     msg << setprecision(3) << fixed << t_offset_v << "\n";
     this->getComm()->write(msg.str());
     return;
@@ -208,7 +208,7 @@ double Sdg1000X::getOffset(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV?\n";
+    msg << "C" << (t_channel + 1) << ":BSWV?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(this->getBswvVal(resp, "OFST"));
 }
@@ -219,7 +219,7 @@ void Sdg1000X::setRisingEdge(unsigned t_channel, double t_rise_s)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
  
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV RISE,";
+    msg << "C" << (t_channel + 1) << ":BSWV RISE,";
     msg << setprecision(3) << fixed << scientific << t_rise_s << "\n";
     this->getComm()->write(msg.str());
     return;
@@ -231,7 +231,7 @@ double Sdg1000X::getRisingEdge(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV?\n";
+    msg << "C" << (t_channel + 1) << ":BSWV?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(this->getBswvVal(resp, "RISE"));
 }
@@ -242,7 +242,7 @@ void Sdg1000X::setFallingEdge(unsigned t_channel, double t_fall_s)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV FALL,";
+    msg << "C" << (t_channel + 1) << ":BSWV FALL,";
     msg << setprecision(3) << fixed << scientific << t_fall_s << "\n";
     this->getComm()->write(msg.str());
     return;
@@ -254,7 +254,7 @@ double Sdg1000X::getFallingEdge(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV?\n";
+    msg << "C" << (t_channel + 1) << ":BSWV?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(this->getBswvVal(resp, "FALL"));
 }
@@ -265,7 +265,7 @@ void Sdg1000X::setPulseWidth(unsigned t_channel, double t_width_s)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV WIDTH,";
+    msg << "C" << (t_channel + 1) << ":BSWV WIDTH,";
     msg << setprecision(3) << fixed << scientific << t_width_s << "\n";
     this->getComm()->write(msg.str());
     return;
@@ -277,7 +277,7 @@ double Sdg1000X::getPulseWidth(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << "C" << t_channel << ":BSWV?\n";
+    msg << "C" << (t_channel + 1) << ":BSWV?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(this->getBswvVal(resp, "WIDTH"));
 }

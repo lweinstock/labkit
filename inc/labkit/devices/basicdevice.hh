@@ -38,9 +38,9 @@ protected:
     BasicDevice(std::string t_name, unsigned t_channels = 1) 
       : m_name(t_name), m_channels(t_channels) {};
 
-    /// Returns true if channel is valid (NOTE: 1-indexed!)
+    /// Returns true if channel is valid
     virtual bool channelValid(unsigned t_channel) 
-        { return t_channel && (t_channel <= m_channels); }
+        { return (t_channel < m_channels); }
 
     /// Establish connection using provided unique pointer and take ownership
     void setComm(std::unique_ptr<BasicComm> t_comm);

@@ -46,7 +46,7 @@ void Ds1000Z::enableChannel(unsigned t_channel, bool t_enable)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":CHAN" << t_channel << ":DISP ";
+    msg << ":CHAN" << (t_channel + 1) << ":DISP ";
     if (t_enable) msg << "1\n";
     else msg << "0\n";
     this->getComm()->write(msg.str());
@@ -59,7 +59,7 @@ bool Ds1000Z::channelEnabled(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":CHAN" << t_channel << ":DISP?\n";
+    msg << ":CHAN" << (t_channel + 1) << ":DISP?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<bool>(resp);
 }
@@ -70,7 +70,7 @@ void Ds1000Z::setAtten(unsigned t_channel, double t_att)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":CHAN" << t_channel << ":PROB " << t_att << "\n";
+    msg << ":CHAN" << (t_channel + 1) << ":PROB " << t_att << "\n";
     this->getComm()->write(msg.str());
     return;
 }
@@ -81,7 +81,7 @@ double Ds1000Z::getAtten(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":CHAN" << t_channel << ":PROB?\n";
+    msg << ":CHAN" << (t_channel + 1) << ":PROB?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp);
 }
@@ -92,7 +92,7 @@ void Ds1000Z::setVertBase(unsigned t_channel, double t_volts_per_div)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":CHAN" << t_channel << ":SCAL " << t_volts_per_div << "\n";
+    msg << ":CHAN" << (t_channel + 1) << ":SCAL " << t_volts_per_div << "\n";
     this->getComm()->write(msg.str());
     return;
 }
@@ -103,7 +103,7 @@ double Ds1000Z::getVertBase(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":CHAN" << t_channel << ":SCAL?\n";
+    msg << ":CHAN" << (t_channel + 1) << ":SCAL?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp);
 }
@@ -114,7 +114,7 @@ void Ds1000Z::setVertOffset(unsigned t_channel, double t_offset_v)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":CHAN" << t_channel << ":OFFS " << t_offset_v << "\n";
+    msg << ":CHAN" << (t_channel + 1) << ":OFFS " << t_offset_v << "\n";
     this->getComm()->write(msg.str());
     return;
 }
@@ -125,7 +125,7 @@ double Ds1000Z::getVertOffset(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":CHAN" << t_channel << ":OFFS?\n";
+    msg << ":CHAN" << (t_channel + 1) << ":OFFS?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp);
 }
@@ -189,7 +189,7 @@ void Ds1000Z::setMeasurement(unsigned t_channel, MeasurementItem t_meas)
     }
 
     stringstream msg("");
-    msg << ":MEAS:ITEM " << measToString(t_meas) << ",CHAN" << t_channel << "\n";
+    msg << ":MEAS:ITEM " << measToString(t_meas) << ",CHAN" << (t_channel + 1) << "\n";
     this->getComm()->write(msg.str());
     return;
 }
@@ -226,7 +226,7 @@ double Ds1000Z::getMeasurement(unsigned t_channel, MeasurementItem t_meas)
     }
 
     stringstream msg("");
-    msg << ":MEAS:ITEM? " << measToString(t_meas) << ",CHAN" << t_channel << "\n";
+    msg << ":MEAS:ITEM? " << measToString(t_meas) << ",CHAN" << (t_channel + 1) << "\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp);
 }
@@ -336,7 +336,7 @@ void Ds1000Z::setTriggerLevel(double t_level)
 void Ds1000Z::setTriggerSource(unsigned t_channel)
 {
     stringstream msg("");
-    msg << ":TRIG:EDG:SOUR CHAN" << t_channel << "\n";
+    msg << ":TRIG:EDG:SOUR CHAN" << (t_channel + 1) << "\n";
     this->getComm()->write(msg.str().c_str());
     return;
 }

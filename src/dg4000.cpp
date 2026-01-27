@@ -46,7 +46,7 @@ void Dg4000::enableChannel(unsigned t_channel, bool t_enable)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":OUTP" << t_channel << ":STAT" << (t_enable? " ON" : " OFF") << "\n";
+    msg << ":OUTP" << (t_channel + 1) << ":STAT" << (t_enable? " ON" : " OFF") << "\n";
     this->getComm()->write(msg.str());
     return;
 }
@@ -57,7 +57,7 @@ bool Dg4000::channelEnabled(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << ":OUTP" << t_channel << ":STAT?\n";
+    msg << ":OUTP" << (t_channel + 1) << ":STAT?\n";
     string resp = this->getComm()->query(msg.str());
     if ( resp.find("ON") != string::npos )
         return true;
@@ -70,7 +70,7 @@ void Dg4000::setWaveform(unsigned t_channel, Waveform t_wvfm)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":APPL:" << wvfmToString(t_wvfm) << "\n";
+    msg << ":SOUR" << (t_channel + 1) << ":APPL:" << wvfmToString(t_wvfm) << "\n";
     this->getComm()->write(msg.str());
     return;
 }
@@ -94,7 +94,7 @@ void Dg4000::setFrequency(unsigned t_channel, double t_freq_hz)
         throw DeviceError("Invalid frequency " + to_string(t_freq_hz) + "Hz");
 
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":FREQ " << t_freq_hz << "\n";
+    msg << ":SOUR" << (t_channel + 1) << ":FREQ " << t_freq_hz << "\n";
     this->writeAtLeast(msg.str(), 5);
     return;
 }
@@ -105,7 +105,7 @@ double Dg4000::getFrequency(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":FREQ?\n";
+    msg << ":SOUR" << (t_channel + 1) << ":FREQ?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp);
 }
@@ -119,7 +119,7 @@ void Dg4000::setDutyCycle(unsigned t_channel, double t_dcl)
         throw DeviceError("Invalid duty cycle " + to_string(t_dcl));
 
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":PULS:DCYC " << 100*t_dcl << "\n";
+    msg << ":SOUR" << (t_channel + 1) << ":PULS:DCYC " << 100*t_dcl << "\n";
     this->writeAtLeast(msg.str(), 5);
     return;
 }
@@ -130,7 +130,7 @@ double Dg4000::getDutyCycle(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":PULS:DCYC?\n";
+    msg << ":SOUR" << (t_channel + 1) << ":PULS:DCYC?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp)/100.;
 }
@@ -144,7 +144,7 @@ void Dg4000::setPhase(unsigned t_channel, double t_phase_deg)
         throw DeviceError("Invalid phase angle " + to_string(t_phase_deg));
 
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":PHAS " << t_phase_deg << "\n";
+    msg << ":SOUR" << (t_channel + 1) << ":PHAS " << t_phase_deg << "\n";
     this->writeAtLeast(msg.str(), 5);    
     return;
 }
@@ -155,7 +155,7 @@ double Dg4000::getPhase(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":PHAS?\n";
+    msg << ":SOUR" << (t_channel + 1) << ":PHAS?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp);
 }
@@ -166,7 +166,7 @@ void Dg4000::setAmplitude(unsigned t_channel, double t_ampl_v)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":VOLT " << t_ampl_v << "\n";
+    msg << ":SOUR" << (t_channel + 1) << ":VOLT " << t_ampl_v << "\n";
     this->writeAtLeast(msg.str(), 5);
     return;
 }
@@ -177,7 +177,7 @@ double Dg4000::getAmplitude(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
  
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":VOLT?\n";
+    msg << ":SOUR" << (t_channel + 1) << ":VOLT?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp);
 }
@@ -188,7 +188,7 @@ void Dg4000::setOffset(unsigned t_channel, double t_offset_v)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
  
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":VOLT:OFFS " << t_offset_v << "\n";
+    msg << ":SOUR" << (t_channel + 1) << ":VOLT:OFFS " << t_offset_v << "\n";
     this->writeAtLeast(msg.str(), 5);
     return;
 }
@@ -199,7 +199,7 @@ double Dg4000::getOffset(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":VOLT:OFFS?\n";
+    msg << ":SOUR" << (t_channel + 1) << ":VOLT:OFFS?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp);
 }
@@ -210,7 +210,7 @@ void Dg4000::setRisingEdge(unsigned t_channel, double t_rise_s)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
  
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":PULS:TRAN:LEAD " << t_rise_s << "\n";
+    msg << ":SOUR" << (t_channel + 1) << ":PULS:TRAN:LEAD " << t_rise_s << "\n";
     this->getComm()->write(msg.str());
     return;
 }
@@ -221,7 +221,7 @@ double Dg4000::getRisingEdge(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":PULS:TRAN:LEAD?\n";
+    msg << ":SOUR" << (t_channel + 1) << ":PULS:TRAN:LEAD?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp);
 }
@@ -232,7 +232,7 @@ void Dg4000::setFallingEdge(unsigned t_channel, double t_fall_s)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":PULS:TRAN:TRA " << t_fall_s << "\n";
+    msg << ":SOUR" << (t_channel + 1) << ":PULS:TRAN:TRA " << t_fall_s << "\n";
     this->getComm()->write(msg.str());
     return;
 }
@@ -243,7 +243,7 @@ double Dg4000::getFallingEdge(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":PULS:TRAN:TRA?\n";
+    msg << ":SOUR" << (t_channel + 1) << ":PULS:TRAN:TRA?\n";
     string resp = this->getComm()->query(msg.str());
     return convertTo<double>(resp);
 }
@@ -254,7 +254,7 @@ void Dg4000::setPulseWidth(unsigned t_channel, double t_width_s)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
     
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":PULS:WIDT " << t_width_s << "\n";
+    msg << ":SOUR" << (t_channel + 1) << ":PULS:WIDT " << t_width_s << "\n";
     this->getComm()->write(msg.str());    
     return;
 }
@@ -265,7 +265,7 @@ double Dg4000::getPulseWidth(unsigned t_channel)
         throw DeviceError("Invalid channel number " + to_string(t_channel));
 
     stringstream msg("");
-    msg << ":SOUR" << t_channel << ":PULS:WIDT?\n";
+    msg << ":SOUR" << (t_channel + 1) << ":PULS:WIDT?\n";
     string resp = this->getComm()->query(msg.str());
     return stof(resp);    
     return 0.;
