@@ -3,6 +3,7 @@
 
 #include <labkit/devices/basicdevice.hh>
 #include <labkit/comms/usbcomm.hh>
+#include <stdexcept>
 
 namespace labkit
 {
@@ -31,16 +32,6 @@ public:
 
     /* LabJack U3 commands */
 
-    /// Analog input pin definitions 
-    // TODO: Conversion from DigitalIo::FIO0 to AnalogInput::AIN0 etc. !!!
-    enum AnalogInput : unsigned { AIN0 = 0, AIN1, AIN2, AIN3, AIN4, AIN5, AIN6, 
-        AIN7, AIN8, AIN9, AIN10, AIN11, AIN12, AIN13, AIN14, AIN15, TEMP = 30, 
-        VREG, VREF = 30, GND,
-        // Alternative numbering AIN -> FIO/EIO
-        FIO0_A = 0, FIO1_A, FIO2_A, FIO3_A, FIO4_A, FIO5_A, FIO6_A, FIO7_A,
-        EIO0_A = 8, EIO1_A, EIO2_A, EIO3_A, EIO4_A, EIO5_A, EIO6_A, EIO7_A
-    };
-
     /// Digital input/output pin definitions
     enum DigitalIo : unsigned { DIO0 = 0, DIO1, DIO2, DIO3, DIO4, DIO5, DIO6, 
         DIO7, DIO8, DIO9, DIO10, DIO11, DIO12, DIO13, DIO14, DIO15, DIO16, 
@@ -49,6 +40,20 @@ public:
         FIO0 = 0, FIO1, FIO2, FIO3, FIO4, FIO5, FIO6, FIO7,
         EIO0 = 8, EIO1, EIO2, EIO3, EIO4, EIO5, EIO6, EIO7,
         CIO0 = 16, CIO1, CIO2, CIO3 };
+
+    /// Analog input pin definitions 
+    enum AnalogInput : unsigned { AIN0 = 0, AIN1, AIN2, AIN3, AIN4, AIN5, AIN6, 
+        AIN7, AIN8, AIN9, AIN10, AIN11, AIN12, AIN13, AIN14, AIN15, TEMP = 30, 
+        VREG, VREF = 30, GND,
+    };
+
+    /// Conversion from AnalogInput to DigitalIo
+    static DigitalIo toDigital(AnalogInput t_ain)
+    {
+        if (t_ain > AIN15)
+            throw std::out_of_range("Invalid conversion to DigitalIo");
+        return static_cast<DigitalIo>(t_ain);
+    };
 
     enum PinMode : bool { DIGITAL = false, ANALOG = true };
     enum PinState: bool { LOW = false, HIGH = true };
