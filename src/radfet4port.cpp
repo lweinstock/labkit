@@ -25,12 +25,12 @@ float RadFET4Port::getFETVoltage(unsigned t_channel, uint32_t &t_raw_adc)
     if (t_channel > 3)
         throw DeviceError("Invalid channel (0-3)");
 
-    auto resp = this->getComm()->query("dose " + std::to_string(t_channel));
+    auto resp = this->getComm()->query("dose " + std::to_string(t_channel) + "\n");
 
     // Extract voltage and raw ADC count from response
     double voltage {0};
     std::stringstream tmp(resp);
-    tmp >> voltage >> t_raw_adc;
+    tmp >> t_raw_adc >> voltage;
     return voltage;
 }
 
@@ -45,12 +45,12 @@ float RadFET4Port::getDiodeVoltage(unsigned t_channel, uint32_t &t_raw_adc)
     if (t_channel > 3)
         throw DeviceError("Invalid channel (0-3)");
     
-    auto resp = this->getComm()->query("temp " + std::to_string(t_channel));
+    auto resp = this->getComm()->query("temp " + std::to_string(t_channel) + "\n");
     
     // Extract voltage and raw ADC count from response
     double voltage {0};
     std::stringstream tmp(resp);
-    tmp >> voltage >> t_raw_adc;
+    tmp >> t_raw_adc >> voltage;
     return voltage;
 }
 
@@ -62,7 +62,7 @@ float RadFET4Port::getDiodeVoltage(unsigned t_channel)
 
 void RadFET4Port::reboot()
 {
-    this->getComm()->write("reboot");
+    this->getComm()->write("reboot\n");
     return;
 }
 
