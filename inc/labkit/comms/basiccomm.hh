@@ -97,28 +97,30 @@ public:
     /** \brief C++-style string write followed by a read.
      *  \param [in] t_msg Query message.
      *  \param [in] t_timeout_ms Read timeout in milli seconds.
+     *  \param [in] t_delay_ms Delay between write and read operation.
      *  \return Response string.
      */
     std::string query(const std::string& t_msg, 
-        unsigned t_timeout_ms = DFLT_TIMEOUT_MS);
+        unsigned t_timeout_ms = DFLT_TIMEOUT_MS , unsigned t_delay_ms = 0);
 
-    /**
-     * \brief C++-style string write followed by a read until delim is read.
-     * \param [in] t_msg Query message.
-     * \param [in] t_delim Stop delimiter.
-     * \param [in] t_timeout_ms Read timeout in milli seconds.
-     * \return Response string
+    /** \brief C++-style string write followed by a read until delim is read.
+     *  \param [in] t_msg Query message.
+     *  \param [in] t_delim Stop delimiter.
+     *  \param [in] t_timeout_ms Read timeout in milli seconds.
+     *  \param [in] t_delay_ms Delay between write and read operation.
+     *  \return Response string
      */
     std::string queryUntil(const std::string& t_msg, const std::string& t_delim, 
-        unsigned t_timeout_ms = DFLT_TIMEOUT_MS);
+        unsigned t_timeout_ms = DFLT_TIMEOUT_MS, unsigned t_delay_ms = 0);
 
     /** \brief C++-style byte write followed by a read.
      *  \param [in] t_data Query bytes.
      *  \param [in] t_timeout_ms Read timeout in milli seconds.
+     *  \param [in] t_delay_ms Delay between write and read operation.
      *  \return Response bytes.
      */
     std::vector<uint8_t> queryByte(const std::vector<uint8_t> t_data, 
-        unsigned t_timeout_ms = DFLT_TIMEOUT_MS);
+        unsigned t_timeout_ms = DFLT_TIMEOUT_MS, unsigned t_delay_ms = 0);
 
     /// Open interface with stored settings
     virtual void open() = 0;

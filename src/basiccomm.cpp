@@ -62,31 +62,33 @@ string BasicComm::readUntil(const string& delim, size_t& pos,
     return ret;
 }
 
-string BasicComm::readUntil(const string& delim, 
-    unsigned timeout_ms) 
+string BasicComm::readUntil(const string& delim, unsigned timeout_ms) 
 {
     size_t temp {0};
     return this->readUntil(delim, temp, timeout_ms);    
 }
 
-string BasicComm::query(const string& msg, unsigned timeout_ms) {
+string BasicComm::query(const string& msg, unsigned timeout_ms, 
+    unsigned t_delay_ms) 
+{
     this->write(msg);
-    //usleep(10000);
+    if (t_delay_ms) usleep(1e3 * t_delay_ms);
     return this->read(timeout_ms);
 }
 
 string BasicComm::queryUntil(const string& t_msg, const string& t_delim, 
-    unsigned t_timeout_ms)
+    unsigned t_timeout_ms, unsigned t_delay_ms)
 {
     this->write(t_msg);
-    //usleep(10000);
+    if (t_delay_ms) usleep(1e3 * t_delay_ms);
     return this->readUntil(t_delim, t_timeout_ms);
 }
 
-vector<uint8_t> BasicComm::queryByte(const vector<uint8_t> data, unsigned timeout_ms)
+vector<uint8_t> BasicComm::queryByte(const vector<uint8_t> data, 
+    unsigned timeout_ms, unsigned t_delay_ms)
 {
     this->writeByte(data);
-    //usleep(10000);
+    if (t_delay_ms) usleep(1e3 * t_delay_ms);
     return this->readByte(timeout_ms);
 }
 
