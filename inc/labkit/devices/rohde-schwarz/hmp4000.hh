@@ -76,7 +76,7 @@ private:
     void selectChannel(unsigned t_channel);
 
     /// Hameg is quite slow to process queries, therefore a query delay is added
-    static constexpr unsigned QUERY_DELAY_MS = 10;
+    static constexpr unsigned QUERY_DELAY_MS = 100;
 
     Scpi m_scpi{};
 };

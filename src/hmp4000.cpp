@@ -136,12 +136,13 @@ double Hmp4000::measureCurrent(unsigned t_channel)
 
 void Hmp4000::init()
 {
-    m_scpi.setComm(this->getComm());
-    m_scpi.cls();
+    this->getComm()->write("*CLS\n");
     usleep(100e3);  // takes some time...
 
     // Get identifier and remove all control chars (i.e. /n, /0, etc.)
-    m_name = removeCtrlChars(m_scpi.getIdn());
+    auto idn = this->getComm()->queryUntil("*IDN?\n", "\n", 
+        BasicComm::DFLT_TIMEOUT_MS, 100);
+    m_name = removeCtrlChars(idn);
     return;
 }
 

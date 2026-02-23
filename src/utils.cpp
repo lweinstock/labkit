@@ -36,8 +36,8 @@ template <typename T> T convertTo(const std::string &t_val)
     iss >> ret;
     bool success = !iss.fail();
     if (!success)
-        throw ConversionError("Failed to convert '" + t_val + " to "
-            + typeid(T).name());
+        throw ConversionError("Failed to convert '" + removeCtrlChars(t_val) + 
+            "' to '" + typeid(T).name() + "'");
     return ret;
 }
 
