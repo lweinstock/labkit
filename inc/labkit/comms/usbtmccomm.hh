@@ -72,7 +72,7 @@ public:
 
 private:
 
-    // USBTMC protocol definitions
+    /// USBTMC protocol definitions
     static constexpr unsigned HEADER_LEN = 12;
     static constexpr uint8_t LIBUSB_SUBCLASS_TMC = 0x03;
     enum bRequest : uint16_t {
@@ -102,11 +102,14 @@ private:
 
     uint8_t m_cur_tag {0x01}, m_term_char {0x00};
 
-    // Creates a USBTMC header
+    /// Increase bTag (0x01 ... 0xFF)
+    void incTag();
+
+    /// Creates a USBTMC header
     std::vector<uint8_t> createUsbTmcHeader(uint8_t t_message_id, 
         uint8_t t_transfer_attr, uint32_t t_transfer_size, uint8_t t_term_char = 0x00);
 
-    // Extract data from header, check bTag fields, returns transfer length
+    /// Extract data from header, check bTag fields, returns transfer length
     int checkUsbUmcHeader(std::vector<uint8_t> t_message, uint8_t t_message_id);
 
 };

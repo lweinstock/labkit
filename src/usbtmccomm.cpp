@@ -78,7 +78,7 @@ int UsbTmcComm::readDevDepMsg(uint8_t* t_data, size_t t_max_len,
     DEBUG_PRINT_BYTE_DATA(t_data, bytes_received, "Read %zu bytes: ", bytes_received);
 
     // Increase bTag for next communication
-    m_cur_tag++;
+    this->incTag();
     
     return bytes_received;
 }
@@ -137,7 +137,7 @@ string UsbTmcComm::readVendorSpecific(int t_timeout_ms)
         ret.c_str());
 
     // Increase bTag for next communication
-    m_cur_tag++;
+    this->incTag();
 
     return ret;
 }
@@ -145,6 +145,15 @@ string UsbTmcComm::readVendorSpecific(int t_timeout_ms)
 /*
  *      P R I V A T E   M E T H O D S
  */
+
+void UsbTmcComm::incTag()
+{
+    if (m_cur_tag == 0xFF)
+        m_cur_tag = 0x01;
+    else
+        m_cur_tag++;
+    return;
+}
 
 vector<uint8_t> UsbTmcComm::createUsbTmcHeader(uint8_t t_message_id, 
     uint8_t t_transfer_attr, uint32_t t_transfer_size, uint8_t t_term_char) 
