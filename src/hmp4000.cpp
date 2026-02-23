@@ -1,3 +1,4 @@
+#include "labkit/comms/basiccomm.hh"
 #include "labkit/comms/usbtmccomm.hh"
 #include <labkit/devices/rohde-schwarz/hmp4000.hh>
 #include <labkit/utils.hh>
@@ -68,7 +69,8 @@ bool Hmp4000::channelEnabled(unsigned t_channel)
 {
     this->selectChannel(t_channel);
 
-    string resp = this->getComm()->query("OUTP?\n");
+    string resp = this->getComm()->queryUntil("OUTP?\n", "\n", 
+        BasicComm::BasicComm::DFLT_TIMEOUT_MS, QUERY_DELAY_MS);
     return convertTo<bool>(resp);
 }
 
@@ -86,7 +88,8 @@ double Hmp4000::getVoltage(unsigned t_channel)
 {
     this->selectChannel(t_channel);
 
-    string resp = this->getComm()->query("VOLT?\n");
+    string resp = this->getComm()->queryUntil("VOLT?\n", "\n", 
+        BasicComm::DFLT_TIMEOUT_MS, QUERY_DELAY_MS);
     return convertTo<double>(resp);
 }
 
@@ -94,7 +97,8 @@ double Hmp4000::measureVoltage(unsigned t_channel)
 {
     this->selectChannel(t_channel);
 
-    string resp = this->getComm()->query("MEAS:VOLT?\n");
+    string resp = this->getComm()->queryUntil("MEAS:VOLT?\n", "\n", 
+        BasicComm::DFLT_TIMEOUT_MS, QUERY_DELAY_MS);
     return convertTo<double>(resp);
 }
 
@@ -112,7 +116,8 @@ double Hmp4000::getCurrent(unsigned t_channel)
 {
     this->selectChannel(t_channel);
 
-    string resp = this->getComm()->query("CURR?\n");
+    string resp = this->getComm()->queryUntil("CURR?\n", "\n", 
+        BasicComm::DFLT_TIMEOUT_MS, QUERY_DELAY_MS);
     return convertTo<double>(resp);
 }
 
@@ -120,7 +125,8 @@ double Hmp4000::measureCurrent(unsigned t_channel)
 {
     this->selectChannel(t_channel);
 
-    string resp = this->getComm()->query("MEAS:CURR?\n");
+    string resp = this->getComm()->queryUntil("MEAS:CURR?\n", "\n", 
+        BasicComm::DFLT_TIMEOUT_MS, QUERY_DELAY_MS);
     return convertTo<double>(resp);
 }
 
