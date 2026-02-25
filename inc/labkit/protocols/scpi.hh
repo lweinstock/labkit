@@ -80,7 +80,7 @@ public:
 private:
     std::weak_ptr<BasicComm> m_comm;
 
-    std::shared_ptr<BasicComm> getComm();
+    std::shared_ptr<BasicComm> getComm() const;
 };
 
 }

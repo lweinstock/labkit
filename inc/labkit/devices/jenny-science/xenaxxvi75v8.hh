@@ -5,7 +5,7 @@
 #include <labkit/comms/tcpipcomm.hh>
 #include <labkit/comms/serialcomm.hh>
 
-#include <memory.h>
+#include <memory>
 
 namespace labkit {
 
@@ -31,7 +31,7 @@ public:
     void disconnect() override;
 
     // En-/disable power of Xenax motor controller
-    void powerOn(bool t_enable = true) { this->queryCmd( enable? "PW" : "PQ"); }
+    void powerOn(bool t_enable = true) { this->queryCmd( t_enable? "PW" : "PQ"); }
     void powerOff() { powerOn(false); }
     void powerContinue() { this->queryCmd("PWC"); }
     bool isOn() { return std::stoi(this->queryCmd("TS")); }

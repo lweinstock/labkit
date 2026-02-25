@@ -53,7 +53,7 @@ void ModbusRtu::writeSingleHoldingReg(uint8_t t_unit_id, uint16_t t_addr,
     DEBUG_PRINT("Writing 0x%04X to address 0x%04X (unit_id=%u)\n",
         t_reg, t_addr, t_unit_id);
 
-    vector<uint8_t> resp = m_comm->queryByte(packet);
+    vector<uint8_t> resp = this->getComm()->queryByte(packet);
 
     // Extract header and data from response
     uint8_t received_fcode {0x00}, received_err {0x00};
@@ -93,7 +93,7 @@ void ModbusRtu::writeMultipleHoldingRegs(uint8_t t_unit_id, uint16_t t_addr,
     DEBUG_PRINT("Writing %u registers with starting address 0x%04X "
         "(unit_id=%u)\n", len, t_addr, t_unit_id);
 
-    vector<uint8_t> resp = m_comm->queryByte(packet);
+    vector<uint8_t> resp = this->getComm()->queryByte(packet);
 
     // Extract header and data from response
     uint8_t received_fcode = resp.at(1);
@@ -140,7 +140,7 @@ vector<uint8_t> ModbusRtu::createPacket(uint8_t t_unit_id,
     packet.insert(packet.end(), t_data.begin(), t_data.end());
 
     // MODBUS RTU: Append CRC checksum
-    if (m_comm->type() == SERIAL) {
+    if (this->getComm()->type() == SERIAL) {
         uint16_t crc = this->calcCrc16(packet);
         packet.push_back(static_cast<uint8_t>(0xFF & crc));
         packet.push_back(static_cast<uint8_t>(0xFF & (crc >> 8)));
@@ -163,7 +163,7 @@ vector<uint16_t> ModbusRtu::read16BitRegs(uint8_t t_unit_id,
     DEBUG_PRINT("Reading %u registers with starting address 0x%04X "
         "(unit_id=%u)\n", t_len, t_start_addr, t_unit_id);
 
-    auto resp = m_comm->queryByte(packet);
+    auto resp = this->getComm()->queryByte(packet);
 
     // Extract header and data from response
     vector<uint8_t> received_data {};

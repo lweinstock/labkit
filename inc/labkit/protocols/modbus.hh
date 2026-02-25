@@ -9,17 +9,18 @@ namespace labkit
 
 /** \brief Abstract base class for the MODBUS protocol
  *
- *  Basic MODBUS definitions used by MODBUS TCP and MODBUS RTC.
+ *  Basic MODBUS definitions used by MODBUS TCP and MODBUS RTC. This protocol
+ *  requires a communication interface, but does not take ownership of it!
  */
 class Modbus
 {
 public:
     Modbus() {};
-    Modbus(std::shared_ptr<BasicComm> t_comm) : m_comm(t_comm) {};
+    Modbus(std::weak_ptr<BasicComm> t_comm) : m_comm(t_comm) {};
     ~Modbus() {};
     
     /// Set communication interface
-    void setComm(std::shared_ptr<BasicComm> t_comm) { t_comm = m_comm; }
+    void setComm(std::weak_ptr<BasicComm> t_comm) { t_comm = m_comm; }
 
     /// Modbus function codes
     enum FunctionCode : uint8_t 
@@ -76,10 +77,14 @@ public:
         std::vector<uint16_t> t_regs) = 0;
 
 protected:
-    std::shared_ptr<BasicComm> m_comm {nullptr};
+    /// Returns a pointer to the communication interface, if valid
+    std::shared_ptr<BasicComm> getComm() const;
 
     /// Check error codes and throw corresponding exception
     static void checkAndThrow(uint8_t error);
+
+private:
+    std::weak_ptr<BasicComm> m_comm {};
 };
 
 }

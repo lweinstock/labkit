@@ -54,7 +54,7 @@ void ModbusTcp::writeSingleHoldingReg(uint8_t t_unit_id, uint16_t t_addr,
     DEBUG_PRINT("Writing 0x%04X to address 0x%04X (tid=%u, unit_id=%u)\n",
         t_reg, t_addr, m_tid, t_unit_id);
 
-    vector<uint8_t> resp = m_comm->queryByte(packet);
+    vector<uint8_t> resp = this->getComm()->queryByte(packet);
 
     // Extract header and data from response
     uint8_t received_fcode {0x00}, received_err {0x00};
@@ -97,7 +97,7 @@ void ModbusTcp::writeMultipleHoldingRegs(uint8_t t_unit_id, uint16_t t_addr,
     DEBUG_PRINT("Writing %u registers with starting address 0x%04X "
         "(tid=%u, unit_id=%u)\n", len, t_addr, m_tid, t_unit_id);
 
-    vector<uint8_t> resp = m_comm->queryByte(packet);
+    vector<uint8_t> resp = this->getComm()->queryByte(packet);
 
     // Extract header and data from response
     uint8_t received_fcode {0x00}, received_err {0x00};
@@ -153,7 +153,7 @@ vector<uint16_t> ModbusTcp::read16BitRegs(uint8_t t_unit_id,
     DEBUG_PRINT("Reading %u registers with starting address 0x%04X "
         "(tid=%u, unit_id=%u)\n", t_len, t_start_addr, m_tid, t_unit_id);
 
-    auto resp = m_comm->queryByte(packet);
+    auto resp = this->getComm()->queryByte(packet);
 
     // Extract header and data from response
     vector<uint8_t> received_data {};

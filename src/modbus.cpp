@@ -1,8 +1,17 @@
 #include <labkit/protocols/modbus.hh>
 #include <labkit/exceptions.hh>
 
+using namespace std;
+
 namespace labkit
 {
+
+shared_ptr<BasicComm> Modbus::getComm() const
+{
+    if (m_comm.expired())
+        throw BadConnection("Invalid communication interface for MODBUS");
+    return m_comm.lock();
+}
 
 void Modbus::checkAndThrow(uint8_t error)
 {

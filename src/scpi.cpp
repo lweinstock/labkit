@@ -87,7 +87,7 @@ bool Scpi::tst()
  *      P R I V A T E   M E T H O D S
  */
 
- shared_ptr<BasicComm> Scpi::getComm()
+ shared_ptr<BasicComm> Scpi::getComm() const
  {
     if (m_comm.expired())
         throw BadConnection("Invalid communication interface for SCPI");
