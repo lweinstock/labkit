@@ -27,13 +27,6 @@ XenaxXvi75V8::XenaxXvi75V8(std::unique_ptr<TcpipComm> t_tcpip) : XenaxXvi75V8()
     return;
 }
 
-XenaxXvi75V8::~XenaxXvi75V8()
-{
-    if (this->connected())
-        this->disconnect();
-    return;
-}
-
 void XenaxXvi75V8::connect(std::unique_ptr<TcpipComm> t_tcpip)
 {
     this->setComm(std::move(t_tcpip));
@@ -45,12 +38,6 @@ void XenaxXvi75V8::connect(std::unique_ptr<SerialComm> t_ser)
 {
     this->setComm(std::move(t_ser));
     this->init();
-    return;
-}
-
-void XenaxXvi75V8::disconnect()
-{
-    this->stopMotion();
     return;
 }
 

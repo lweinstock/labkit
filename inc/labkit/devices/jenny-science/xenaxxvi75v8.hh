@@ -11,12 +11,10 @@ namespace labkit {
 
 class XenaxXvi75V8 : public BasicDevice {
 public:
-    XenaxXvi75V8() : BasicDevice("XENAX Xvi 75v8"), m_force_const(0), 
-        m_error(0), m_output_type(0x5555), m_output_activity(0xFF), 
-        m_error_pending(false) {};
+    XenaxXvi75V8() : BasicDevice("XENAX Xvi 75v8") {};
     XenaxXvi75V8(std::unique_ptr<TcpipComm> t_tcpip);
     XenaxXvi75V8(std::unique_ptr<SerialComm> t_ser);
-    ~XenaxXvi75V8();
+    ~XenaxXvi75V8() {};
 
     // XENAX default port 10001
     static constexpr unsigned PORT = 10001;
@@ -26,9 +24,6 @@ public:
 
     /// Connect to Xenax Xvi 75v8 via USBTMC
     void connect(std::unique_ptr<SerialComm> t_ser);
-
-    /// Stop motion and disconnect from Xenax Xvi 75v8
-    void disconnect() override;
 
     // En-/disable power of Xenax motor controller
     void powerOn(bool t_enable = true) { this->queryCmd( t_enable? "PW" : "PQ"); }
@@ -174,11 +169,11 @@ public:
 
 private:
     std::string m_input_buffer;
-    float m_force_const;   // I->F conversion factor [N/mA]
-    int m_error;
-    uint16_t m_output_type;
-    uint8_t m_output_activity;
-    bool m_error_pending;
+    float m_force_const {0};   // I->F conversion factor [N/mA]
+    int m_error {0};
+    uint16_t m_output_type {0x5555};
+    uint8_t m_output_activity {0xFF};
+    bool m_error_pending {false};
 
     // GPIO Set Output Type (SOT) definitions (manual p. 26)
     enum SOT : uint16_t {
